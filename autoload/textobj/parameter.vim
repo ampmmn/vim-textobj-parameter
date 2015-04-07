@@ -49,6 +49,13 @@ function! textobj#parameter#select_a()  "{{{2
 	call cursor(epos[1:2])
 	let [end_chr, epos_new] = s:search_pos('', [',',';',')','>',']','}'],[])
 	if end_chr == ',' || end_chr == ';'
+		call cursor(spos[1:2])
+		let [start_chr, spos_new] = s:search_pos('b', [',',';','(','<','[','{'],[])
+		if !(start_chr == ',' || start_chr == ';') && s:const_skip_space
+			" first argument, select space after comma/semicolon
+			call cursor(epos_new)
+			let epos_new = searchpos('\s*', 'eW')
+		endif
 		let result[2] = s:normalize(epos_new)
 		return result
 	endif
